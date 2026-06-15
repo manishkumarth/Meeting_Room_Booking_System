@@ -11,6 +11,7 @@ const listRooms = async (req, res, next) => {
     next(err);
   }
 };
+// GET /api/rooms?search=term
 
 // GET /api/rooms/:id
 const getRoom = async (req, res, next) => {

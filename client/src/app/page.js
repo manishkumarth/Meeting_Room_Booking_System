@@ -32,7 +32,7 @@ export default function HomePage() {
 
   if (error) return (
     <div className="card text-center text-red-600">
-      <p>⚠️ {error}</p>
+      <p> {error}</p>
       <p className="text-sm text-gray-500 mt-1">Make sure the backend is running on port 5000</p>
     </div>
   );
