@@ -5,7 +5,7 @@ const Booking = require("../models/Booking");
 const listRooms = async (req, res, next) => {
   try {
     const rooms = await Room.find().sort({ name: 1 });
-    console.log("req",rooms)
+    console.log("req", rooms)
     res.json(rooms);
   } catch (err) {
     next(err);
@@ -120,4 +120,60 @@ function minutesToTime(minutes) {
   return `${h}:${m}`;
 }
 
-module.exports = { listRooms, getRoom, getRoomAvailability };
+
+const createRoom = async (req, res) => {
+  try {
+    const {
+      name,
+      location,
+      floor,
+      capacity,
+      amenities,
+      bufferMinutes,
+    } = req.body;
+
+    if (!name || !location || !floor || !capacity) {
+      return res.status(400).json({
+        success: false,
+        message: "All required fields are required",
+      });
+    }
+
+    const existingRoom = await Room.findOne({
+      name: name.trim(),
+      location: location.trim(),
+      floor: floor.trim(),
+    });
+
+    if (existingRoom) {
+      return res.status(409).json({
+        success: false,
+        message: "Room already exists",
+      });
+    }
+
+    const room = await Room.create({
+      name,
+      location,
+      floor,
+      capacity,
+      amenities,
+      bufferMinutes,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Room created successfully",
+      data: room,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+module.exports = { listRooms, getRoom, getRoomAvailability, createRoom };
